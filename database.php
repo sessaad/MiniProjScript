@@ -1,64 +1,60 @@
 <?php
-
-
 include('connection.php');
-
 
 $connection = new Connection();
 
+$connection->createDatabase('library');
 
-$connection->createDatabase('book_borrower_db');
-$query0 = "CREATE TABLE CITIES (
-    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    NAME VARCHAR(30) NOT NULL
-    )
-    ";
-$query = "CREATE TABLE Clients (
-    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    firstname VARCHAR(30) NOT NULL,
-    firstname VARCHAR(30) NOT NULL,
-    email VARCHAR(50) UNIQUE,
-    password VARCHAR(80),
-    reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIME,
-    idCity INT(6) UNSIGNED NOT NULL,
-    FOREIGN KEY (idCity) REFERENCES Cities(id)
-    )
-    ";
-$query1 = "CREATE TABLE tbl_book_list (
-    -- id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    -- firstname VARCHAR(30) NOT NULL,
-    -- firstname VARCHAR(30) NOT NULL,
-    -- email VARCHAR(50) UNIQUE,
-    -- password VARCHAR(80),
-    -- reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIME
-    )
-    ";
-$query2 = "CREATE TABLE tbl_authors_list (
-    -- id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    -- firstname VARCHAR(30) NOT NULL,
-    -- firstname VARCHAR(30) NOT NULL,
-    -- email VARCHAR(50) UNIQUE,
-    -- password VARCHAR(80),
-    -- reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIME
-    )
-    ";
-$query3 = "CREATE TABLE tbl_borrowed_book (
-    -- id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    -- firstname VARCHAR(30) NOT NULL,
-    -- firstname VARCHAR(30) NOT NULL,
-    -- email VARCHAR(50) UNIQUE,
-    -- password VARCHAR(80),
-    -- reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIME
+$queryStudents = "CREATE TABLE tblstudents (
+    StudentID INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    StudentName VARCHAR(50) NOT NULL,
+    RollId INT(6) NOT NULL,
+    RegDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )
     ";
 
-$connection->selectDatabase('crudPoo6');
+$queryCategories = "CREATE TABLE tblcategories (
+    CategoryID INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    CategoryName VARCHAR(50) NOT NULL
+    )
+    ";
 
-$connection->createTable($query0);
-$connection->createTable($query);
-$connection->createTable($query1);
-$connection->createTable($query2);
-$connection->createTable($query3);
+$queryAuthors = "CREATE TABLE tblauthors (
+    AuthorID INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    AuthorName VARCHAR(50) NOT NULL
+    )
+    ";
 
+$queryBooks = "CREATE TABLE tblbooks (
+    BookID INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    ISBNNumber VARCHAR(20) UNIQUE NOT NULL,
+    BookTitle VARCHAR(100) NOT NULL,
+    CategoryID INT(6) UNSIGNED,
+    AuthorID INT(6) UNSIGNED,
+    Price DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY (BookID),
+    FOREIGN KEY (CategoryID) REFERENCES tblcategories(CategoryID),
+    FOREIGN KEY (AuthorID) REFERENCES tblauthors(AuthorID)
+    )
+    ";
 
+$queryIssuedBookDetails = "CREATE TABLE tblissuedbookdetails (
+    IssuedID INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    StudentID INT(6) UNSIGNED,
+    BookID INT(6) UNSIGNED,
+    IssuedDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    ReturnDate TIMESTAMP,
+    Fine DECIMAL(10,2) DEFAULT 0.00,
+    FOREIGN KEY (StudentID) REFERENCES tblstudents(StudentID),
+    FOREIGN KEY (BookID) REFERENCES tblbooks(BookID)
+    )
+    ";
+
+$connection->selectDatabase('library');
+
+$connection->createTable($queryStudents);
+$connection->createTable($queryCategories);
+$connection->createTable($queryAuthors);
+$connection->createTable($queryBooks);
+$connection->createTable($queryIssuedBookDetails);
 ?>
